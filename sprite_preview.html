@@ -1,0 +1,452 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>像素宠物设计稿</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .pet {
+            background: #2a2a4a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .pet h2 {
+            margin-top: 0;
+            color: #9bbc0f;
+        }
+        .states {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .state {
+            text-align: center;
+        }
+        .state canvas {
+            background: #9bbc0f;
+            border: 2px solid #0f380f;
+            image-rendering: pixelated;
+        }
+        .state-name {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 像素宠物设计稿</h1>
+
+    <div class="pet">
+        <h2>🦞 龙虾 (Lobster)</h2>
+        <div class="states">
+            <div class="state">
+                <canvas id="lobster_neutral" width="80" height="80"></canvas>
+                <div class="state-name">neutral 正常</div>
+            </div>
+            <div class="state">
+                <canvas id="lobster_happy" width="80" height="80"></canvas>
+                <div class="state-name">happy 开心</div>
+            </div>
+            <div class="state">
+                <canvas id="lobster_sad" width="80" height="80"></canvas>
+                <div class="state-name">sad 伤心</div>
+            </div>
+            <div class="state">
+                <canvas id="lobster_sick" width="80" height="80"></canvas>
+                <div class="state-name">sick 生病</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pet">
+        <h2>🐼 熊猫 (Panda)</h2>
+        <div class="states">
+            <div class="state">
+                <canvas id="panda_neutral" width="80" height="80"></canvas>
+                <div class="state-name">neutral 正常</div>
+            </div>
+            <div class="state">
+                <canvas id="panda_happy" width="80" height="80"></canvas>
+                <div class="state-name">happy 开心</div>
+            </div>
+            <div class="state">
+                <canvas id="panda_sad" width="80" height="80"></canvas>
+                <div class="state-name">sad 伤心</div>
+            </div>
+            <div class="state">
+                <canvas id="panda_sick" width="80" height="80"></canvas>
+                <div class="state-name">sick 生病</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pet">
+        <h2>🦭 海豹 (Seal)</h2>
+        <div class="states">
+            <div class="state">
+                <canvas id="seal_neutral" width="80" height="80"></canvas>
+                <div class="state-name">neutral 正常</div>
+            </div>
+            <div class="state">
+                <canvas id="seal_happy" width="80" height="80"></canvas>
+                <div class="state-name">happy 开心</div>
+            </div>
+            <div class="state">
+                <canvas id="seal_sad" width="80" height="80"></canvas>
+                <div class="state-name">sad 伤心</div>
+            </div>
+            <div class="state">
+                <canvas id="seal_sick" width="80" height="80"></canvas>
+                <div class="state-name">sick 生病</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pet">
+        <h2>🥚 蛋 (Egg) - 孵化阶段</h2>
+        <div class="states">
+            <div class="state">
+                <canvas id="egg_1" width="80" height="80"></canvas>
+                <div class="state-name">Stage 1 完整</div>
+            </div>
+            <div class="state">
+                <canvas id="egg_2" width="80" height="80"></canvas>
+                <div class="state-name">Stage 2 裂纹</div>
+            </div>
+            <div class="state">
+                <canvas id="egg_3" width="80" height="80"></canvas>
+                <div class="state-name">Stage 3 孵化中</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 颜色
+    const C = {
+        _: null,
+        R: '#e63946',  // 红色
+        r: '#9d0208',  // 深红
+        K: '#1a1a1a',  // 黑色
+        W: '#ffffff',   // 白色
+        G: '#6c757d',  // 灰色
+        S: '#adb5bd',  // 浅灰
+        g: '#2a9d8f',  // 绿色
+    };
+
+    // 精灵数据 (16x16)
+    const sprites = {
+        lobster_neutral: [
+            "________________",
+            "_______RRrr____",
+            "_______RRrr____",
+            "______RRRRrr____",
+            "_____RRRRRRrr___",
+            "____RRRRRRRRrr__",
+            "___RRRRrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "____RRrrRRRRrr__",
+            "____RRrrRRrr____",
+            "_____RRRRrr_____",
+            "______RRRR______",
+            "_______RR_______",
+            "________________",
+        ],
+        lobster_happy: [
+            "________________",
+            "_______RRrr____",
+            "_______RRrr____",
+            "______RRRRrr____",
+            "_____RRRRRRrr___",
+            "____RRRRRRRRrr__",
+            "___RRRRrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "____RRrrRRRRrr__",
+            "____RRrrRRrr____",
+            "_____RRRRrr_____",
+            "______RRRR______",
+            "_______RR_______",
+            "________________",
+        ],
+        lobster_sad: [
+            "________________",
+            "_______RRrr____",
+            "_______RRrr____",
+            "______RRRRrr____",
+            "_____RRRRRRrr___",
+            "____RRRRRRRRrr__",
+            "___RRRRrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "___RRRrrRRRRrr__",
+            "____RRrrRRRRrr__",
+            "____RRrrRRrr____",
+            "_____RRRRrr_____",
+            "______RRRR______",
+            "_______RR_______",
+            "________________",
+        ],
+        lobster_sick: [
+            "________________",
+            "_______GGgg____",
+            "_______GGgg____",
+            "______GGGGgg____",
+            "_____GGGGGGgg___",
+            "____GGGGGGGGgg__",
+            "___GGGGrGGGGgg__",
+            "___GGGggGGGGgg__",
+            "___GGGggGGGGgg__",
+            "___GGGggGGGGgg__",
+            "____GGggGGGGgg__",
+            "____GGggGGgg____",
+            "_____GGGGgg_____",
+            "______GGGG______",
+            "_______GG_______",
+            "________________",
+        ],
+
+        panda_neutral: [
+            "________________",
+            "_____KKKKKK____",
+            "___KKWWWWWWKK___",
+            "__KKWWKKKKWWKK__",
+            "__KWWWWWWWWWKK__",
+            "_KKWWSSSSSSWWKK_",
+            "_KWWSSSSSSSSWWK_",
+            "_KWWSSSSSSSSWWK_",
+            "__KWWSSSSSSWWK__",
+            "___KWWSSSSWWK___",
+            "___KKWWWWWWKK___",
+            "____KKKKKKKK____",
+            "_____KKKKKK_____",
+            "______KKKK______",
+            "_______KK________",
+            "________________",
+        ],
+        panda_happy: [
+            "________________",
+            "_____KKKKKK____",
+            "___KKWWWWWWKK___",
+            "__KKWWKKKKWWKK__",
+            "__KWWWWWWWWWKK__",
+            "_KKWWSSSSSSWWKK_",
+            "_KWWSSSrrSSWWK_",
+            "_KWWSSSSSSSSWWK_",
+            "__KWWSSSSSSWWK__",
+            "___KWWSSSSWWK___",
+            "___KKWWWWWWKK___",
+            "____KKKKKKKK____",
+            "_____KKKKKK_____",
+            "______KKKK______",
+            "_______KK________",
+            "________________",
+        ],
+        panda_sad: [
+            "________________",
+            "_____KKKKKK____",
+            "___KKWWWWWWKK___",
+            "__KKWWKKKKWWKK__",
+            "__KWWWWWWWWWKK__",
+            "_KKWWSSSSSSWWKK_",
+            "_KWWSSSSSSSSWWK_",
+            "__KWWSSSSSSWWK__",
+            "___KWWSSSSWWK___",
+            "___KKWWWWWWKK___",
+            "____KKKKKKKK____",
+            "_____KKKKKK_____",
+            "______KKKK______",
+            "_______KK________",
+            "________________",
+            "________________",
+        ],
+        panda_sick: [
+            "________________",
+            "_____KKKKKK____",
+            "___KKGGGGGGKK___",
+            "__KKGGGGGGGGKK__",
+            "__KGGGGGGGGGGK__",
+            "_KKGGGGGGGGGGKK_",
+            "_KGGSSSSSSSSGGK_",
+            "_KGGGGGGGGGGGGK_",
+            "__KGGGGGGGGGGK__",
+            "___KGGGGGGG GK__",
+            "___KKGGGGGGKK___",
+            "____KKKKKKKK____",
+            "_____KKKKKK_____",
+            "______KKKK______",
+            "_______KK________",
+            "________________",
+        ],
+
+        seal_neutral: [
+            "________________",
+            "______SSSSSS____",
+            "____SSSSSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "__SSSSSSSSSSSSS_",
+            "__SSSSSSSSSSSSS_",
+            "__SSSrrSSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "___SSSSSSSSSS___",
+            "____SSSSSSSS____",
+            "_____SSSSSS_____",
+            "______SSSS______",
+            "_______SS________",
+            "________S________",
+            "_________________",
+            "________________",
+        ],
+        seal_happy: [
+            "________________",
+            "______SSSSSS____",
+            "____SSSSSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "__SSSSSSSSSSSSS_",
+            "__SSSSSSSSSSSSS_",
+            "__SSSrrSSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "___SSSSSSSSSS___",
+            "____SSSSSSSS____",
+            "_____SSSSSS_____",
+            "______SSSS______",
+            "_______SS________",
+            "________S________",
+            "_________________",
+            "________________",
+        ],
+        seal_sad: [
+            "________________",
+            "______SSSSSS____",
+            "____SSSSSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "__SSSSSSSSSSSSS_",
+            "__SSSSSSSSSSSSS_",
+            "__SSS..SSSSSSS__",
+            "___SSSSSSSSSSS__",
+            "___SSSSSSSSSS___",
+            "____SSSSSSSS____",
+            "_____SSSSSS_____",
+            "______SSSS______",
+            "_______SS________",
+            "________S________",
+            "_________________",
+            "________________",
+        ],
+        seal_sick: [
+            "________________",
+            "______GGGGGG____",
+            "____GGGGGGGGGG__",
+            "___GGGGGGGGGGG__",
+            "__GGGGGGGGGGGGG_",
+            "__GGGGGGGGGGGGG_",
+            "__GGGrrGGGGGGG__",
+            "___GGGGGGGGGGG__",
+            "___GGGGGGGGGG___",
+            "____GGGGGGGG____",
+            "_____GGGGGG_____",
+            "______GGGG______",
+            "_______GG________",
+            "________G________",
+            "_________________",
+            "________________",
+        ],
+
+        egg_1: [
+            "________________",
+            "_____GGGGGGG____",
+            "___GGGGGGGGGGG__",
+            "__GGGGGGGGGGGGG_",
+            "__GGGGGGGGGGGGG_",
+            "_GGGGGGGGGGGGGG_",
+            "_GGGGGGGGGGGGGG_",
+            "_GGGGGGGGGGGGGG_",
+            "_GGGGGGGGGGGGGG_",
+            "__GGGGGGGGGGGGG_",
+            "___GGGGGGGGGGG__",
+            "_____GGGGGGG____",
+            "________________",
+            "________________",
+            "________________",
+            "________________",
+        ],
+        egg_2: [
+            "________________",
+            "_____GGGGGGG____",
+            "___GGGGGGGGGGG__",
+            "__GGGGGGGGGGGGG_",
+            "__GGGG_GGGG_GGG_",
+            "_GGGGGGGGGGGGGG_",
+            "_GGGGGGGGGGGGGG_",
+            "_GGGG__GGGGGGGG_",
+            "__GGGGGGGGGGGGG_",
+            "___GGGGGGGGGGG__",
+            "_____GGGGGGG____",
+            "________________",
+            "________________",
+            "________________",
+            "________________",
+            "________________",
+        ],
+        egg_3: [
+            "________________",
+            "_____RRRRRRR____",
+            "___RRRRRRRRRRR__",
+            "__RRRR_RRRR_RRR_",
+            "__RRR_RRRRR_RRR_",
+            "_RRRRRRRRRRRRRR_",
+            "_RRR__RRRRRRRRR_",
+            "__RR_RRRRRRRRR__",
+            "___RRRRRRRRRR___",
+            "____RRRRRRRR____",
+            "_____RRRRRR_____",
+            "________________",
+            "________________",
+            "________________",
+            "________________",
+            "________________",
+        ],
+    };
+
+    // 绘制精灵
+    function drawSprite(canvasId, spriteData) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        
+        const scale = 5;
+        const offsetX = 0;
+        const offsetY = 0;
+        
+        for (let y = 0; y < 16; y++) {
+            for (let x = 0; x < 16; x++) {
+                const char = spriteData[y][x];
+                const color = C[char];
+                if (color) {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(offsetX + x * scale, offsetY + y * scale, scale, scale);
+                }
+            }
+        }
+    }
+
+    // 绘制所有精灵
+    Object.keys(sprites).forEach(id => {
+        drawSprite(id, sprites[id]);
+    });
+    </script>
+</body>
+</html>
