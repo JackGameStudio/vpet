@@ -151,7 +151,7 @@ function update(dt){
 function drawIdle(){
   cx.fillStyle=ST.lightsOff?DK:BG;cx.fillRect(0,0,W,H);
   if(ST.lightsOff){var pz=Math.floor(fc/30)%2===0?"Z":"z";pTxt(pz+pz+pz,W/2-24,H/2,DK,2);return;}
-  rct(0,0,W,18,MD);pTxt(ST.petName,6,13,BG,.7);pTxt(PNAME[ST.phase],72,13,BG,.7);
+  rct(0,0,W,18,MD);pTxt(ST.phase===0?"?????":ST.petName,6,13,BG,.7);pTxt(PNAME[ST.phase],72,13,BG,.7);
   var ah=Math.floor(ST.ageMinutes/60),am=Math.floor(ST.ageMinutes%60);
   pTxt(ah+"h"+String(am).padStart(2,"0")+"m",W-50,13,BG,.6);
   var bx=6,by=24,bw=66,bh=7;
@@ -189,7 +189,7 @@ function drawMenu(){
     pIco(dis?LOCK:m.i,4,y+6,9);pTxt((sel?">":" ")+m.l,16,y+8,sel?DK:MD,.5);
   });
   rct(0,H-10,W,10,MD);
-  pTxt(ST.petName+" "+PNAME[ST.phase]+" HP:"+ST.hp,W/2-50,H-3,BG,.38);
+  pTxt((ST.phase===0?"?????":ST.petName)+" "+PNAME[ST.phase]+" HP:"+ST.hp,W/2-50,H-3,BG,.38);
 }
 function drawSelectPet(){
   cx.fillStyle=BG;cx.fillRect(0,0,W,H);
