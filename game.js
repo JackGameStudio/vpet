@@ -242,6 +242,7 @@ function pressBtn(type){
     }
     return;
   }
+  if(ST.lightsOff){ST.lightsOff=false;sfx("lon");return}
   if(type==="sel"){menu=!menu;if(menu)mi=0}
   else if(type==="menu"){
     if(menu){sfx("ok");doAction(MENU[mi].a);menu=false}else{menu=true;mi=0}
