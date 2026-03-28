@@ -102,7 +102,6 @@ var MENU = [
   {l:"PLAY", a:"play"},
   {l:"CLEAN", a:"clean"},
   {l:"EDU", a:"study"},
-  {l:"LIGHT", a:"light"},
   {l:"RESET", a:"reset"}
 ];
 var PET_TYPES = ["lobster", "lobster", "lobster", "panda", "seal"];
@@ -160,7 +159,7 @@ var ST = {
   petType: "lobster",
   phase: 0,
   hunger: 80, happiness: 80, cleanliness: 90, discipline: 70,
-  hp: 100, poops: 0, lightsOff: false, dead: false,
+  hp: 100, poops: 0, dead: false,
   ageMinutes: 0, feedTimer: 0, cooldown: 0, hatchP: 0
 };
 var menu = false, selIdx = 0, fc = 0, warn = false;
@@ -321,16 +320,8 @@ function drawPet(x, y) {
 
 // Main draw
 function draw() {
-  cx.fillStyle = ST.lightsOff ? DK : BG;
+  cx.fillStyle = BG;
   cx.fillRect(0, 0, W, H);
-
-  if (ST.lightsOff) {
-    var sleepBob = Math.sin(fc * 0.05) * 5;
-    txt("zzZ", W/2 - 30, H/2 + sleepBob, LT, 1.5);
-    txt("Press PLAY to wake", W/2 - 75, H - 30, MD, 0.4);
-    requestAnimationFrame(loop);
-    return;
-  }
 
   // Top bar
   rct(0, 0, W, 26, MD);
@@ -493,20 +484,7 @@ function loop() {
 
 // Actions
 function doAction(a) {
-  if (ST.lightsOff) {
-    if (a === "play" || a === "light") {
-      ST.lightsOff = false;
-      save();
-    }
-    return;
-  }
-
-  if (ST.cooldown > 0 && a !== "light" && a !== "reset") return;
-  if (a === "light") {
-    ST.lightsOff = !ST.lightsOff;
-    save();
-    return;
-  }
+  if (ST.cooldown > 0 && a !== "reset") return;
   if (ST.dead && a !== "reset") return;
   aur();
 
@@ -549,7 +527,7 @@ function doAction(a) {
           ST.lobsterColor = undefined;
         }
         localStorage.removeItem("denshiPet");
-        ST = {petType: ST.petType, phase:0, hunger:80, happiness:80, cleanliness:90, discipline:70, hp:100, poops:0, lightsOff:false, dead:false, ageMinutes:0, feedTimer:0, cooldown:0, hatchP:0, lobsterColor: ST.lobsterColor, happyTimer:0};
+        ST = {petType: ST.petType, phase:0, hunger:80, happiness:80, cleanliness:90, discipline:70, hp:100, poops:0, dead:false, ageMinutes:0, feedTimer:0, cooldown:0, hatchP:0, lobsterColor: ST.lobsterColor, happyTimer:0};
         sfx("hatch");
       }
       break;
