@@ -19,14 +19,14 @@ body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;ju
 #lcd{background:#9bbc0f;border-radius:4px;image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:auto;max-width:100%}
 .bgt{display:flex;justify-content:center;gap:12px;margin-bottom:6px;margin-top:-8px}
 .bg{display:flex;flex-direction:column;align-items:center;gap:3px}
-.btn{width:50px;height:50px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(145deg,#4a4a5a,#2a2a3a);box-shadow:0 3px 0 #1a1a2a,0 4px 8px rgba(0,0,0,.4);color:rgba(255,255,255,.7);font-family:'Press Start 2P',monospace;font-size:7px;display:flex;align-items:center;justify-content:center;transition:transform .05s,box-shadow .05s;user-select:none;-webkit-tap-highlight-color:transparent}
+.btn{width:50px;height:50px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(145deg,#4a4a5a,#2a2a3a);box-shadow:0 3px 0 #1a1a2a,0 4px 8px rgba(0,0,0,.4);color:rgba(255,255,255,.7);font-family:'Press Start 2P',monospace;font-size:7px;display:flex;align-items:center;justify-content:center;transition:transform .05s,box-shadow .05s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1a1a2a}
 .bsel{width:30px;height:30px;font-size:5px}
 .ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-.bac{width:100%;height:36px;border-radius:8px;background:linear-gradient(145deg,#3a3a4a,#2a2a3a);box-shadow:0 2px 0 #1a1a2a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font-size:9px;border:none;cursor:pointer}
+.bac{width:100%;height:36px;border-radius:8px;background:linear-gradient(145deg,#3a3a4a,#2a2a3a);box-shadow:0 2px 0 #1a1a2a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font-size:9px;border:none;cursor:pointer;touch-action:manipulation}
 .bac:active{transform:translateY(1px);box-shadow:0 1px 0 #1a1a2a}
 .bc{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-.bcc{width:100%;height:36px;border-radius:8px;background:linear-gradient(145deg,#3a3a4a,#2a2a3a);box-shadow:0 2px 0 #1a1a2a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font-size:9px;border:none;cursor:pointer}
+.bcc{width:100%;height:36px;border-radius:8px;background:linear-gradient(145deg,#3a3a4a,#2a2a3a);box-shadow:0 2px 0 #1a1a2a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font-size:9px;border:none;cursor:pointer;touch-action:manipulation}
 .bcc:active{transform:translateY(1px);box-shadow:0 1px 0 #1a1a2a}
 </style>
 </head>
@@ -570,12 +570,17 @@ function load() {
   } catch(e) {}
 }
 
-// Buttons
-document.getElementById("btnA").addEventListener("click", function() { aur(); sfx("ok"); doAction("feed"); });
-document.getElementById("btnB").addEventListener("click", function() { aur(); sfx("ok"); doAction("play"); });
-document.getElementById("btnC").addEventListener("click", function() { aur(); sfx("ok"); doAction("clean"); });
-document.getElementById("btnD").addEventListener("click", function() { aur(); sfx("ok"); doAction("study"); });
-document.getElementById("btnSel").addEventListener("click", function() {
+// Buttons - with touch support
+function addBtnEvents(id, handler) {
+  var btn = document.getElementById(id);
+  btn.addEventListener("click", function(e) { e.preventDefault(); handler(); });
+  btn.addEventListener("touchstart", function(e) { e.preventDefault(); handler(); }, { passive: false });
+}
+addBtnEvents("btnA", function() { aur(); sfx("ok"); doAction("feed"); });
+addBtnEvents("btnB", function() { aur(); sfx("ok"); doAction("play"); });
+addBtnEvents("btnC", function() { aur(); sfx("ok"); doAction("clean"); });
+addBtnEvents("btnD", function() { aur(); sfx("ok"); doAction("study"); });
+addBtnEvents("btnSel", function() {
   aur();
   if (ST.dead) { doAction("reset"); return; }
   if (menu) {
@@ -588,7 +593,7 @@ document.getElementById("btnSel").addEventListener("click", function() {
     selIdx = 0;
   }
 });
-document.getElementById("btnMnu").addEventListener("click", function() {
+addBtnEvents("btnMnu", function() {
   aur();
   if (menu) {
     sfx("select");
